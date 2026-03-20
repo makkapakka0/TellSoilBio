@@ -9,15 +9,12 @@ library(fastshap)
 library(mgcv)
 library(gratia)
 
-data <- read.csv("D:\\tellsoilbio\\PCA\\Counts_withElements_Shannon.csv")
+data <- read.csv('D:\\tellsoilbio\\fulldata\\fulldata_interpolated.csv')
 
-df<-data[,6:75]
-df1<-df[,c(60:67)]
-df<-df[,c('Cu','Zn','Pb','Cd','Se','As','Ni','Fe','Al','Cr','Hg','Mn',
-          'Sr','Mo','Co','Ba','U','Th','Ca','pH_CaCl2')]
-
-env<-cbind(df1,df)
-sp<-data[,6:11]
+env<-data[,c('Cu','Zn','Pb','Cd','Se','As','Ni','Fe','Al','Cr','Hg','Mn',
+         'Sr','Mo','Co','Ba','U','Th','Ca','pH_CaCl2','Sand','Silt',
+         'Clay','TC','TOC','TN','LOI','BD','CEC','Moisture','ACEProtein','C_N_Ratio')]
+sp<-data[,c(9:16,103,104)]
 
 all<-cbind(sp,env)
 
@@ -46,15 +43,15 @@ ggplot(data=loadings,aes(x=0,y=0,xend=PC1,yend=PC2,label=variable))+
         panel.grid.major = element_line(colour = 'gray80'),
         panel.grid.minor = element_line(colour = 'gray80'),
         axis.line = element_line(colour = 'black'))+
-  ggsave('D:\\tellsoilbio\\maps\\PCA\\pca.tiff',dpi=300,width=6.5,height=6)
+  ggsave('D:\\tellsoilbio\\maps\\PCA\\pca2.tiff',dpi=300,width=6.5,height=6)
 
 data$PC1 <- all_pca$x[,1]
 data$pc2 <- all_pca$x[,2]
 
-coords<-data[,84:85]
+coords<-data[,100:101]
 
 pca_sf<-st_as_sf(data,coords=c('Centre_Long','Centre_Lat'),crs=4326)
-st_write(pca_sf,'D:\\tellsoilbio\\PCA\\all_pca.shp',append=FALSE)
+st_write(pca_sf,'D:\\tellsoilbio\\PCA\\all_pca2.shp',append=FALSE)
 
 biplot(all_pca)
 autoplot(all_pca,loadings=TRUE,loadings.label=TRUE)
@@ -83,8 +80,8 @@ ggplot()+
                arrow=arrow(length=unit(0.3,'cm')),color='#d7483a')+
   ggrepel::geom_text_repel(data=env_df,aes(x=RDA1,y=RDA2,label=env),
                            color='#0f2b3a',size=3)+
-  xlim(-0.7,0.7)+
-  ylim(-0.7,0.7)+
+  xlim(-0.8,0.8)+
+  ylim(-0.8,0.8)+
   theme_minimal()+
   theme(axis.text = element_text(size=24),
         axis.title = element_text(size=28),
@@ -92,7 +89,7 @@ ggplot()+
         panel.grid.major = element_line(colour = 'gray80'),
         panel.grid.minor = element_line(colour = 'gray80'),
         axis.line = element_line(colour = 'black'))+
-  ggsave('D:\\tellsoilbio\\maps\\PCA\\rda.tiff',dpi=300,width=6.5,height=6)
+  ggsave('D:\\tellsoilbio\\maps\\PCA\\rda2.tiff',dpi=300,width=6.5,height=6)
 
 plot(rda_result,scaling=2)
 
